@@ -1,0 +1,5 @@
+---
+- name: "restart nginxlog_exporter"
+  service:
+    name: "nginxlog_exporter"
+    state: "restarted"

@@ -1,0 +1,47 @@
+---
+- name: "Check if prometheus-nginxlog-exporter binary exist"
+  stat:
+    path: "/usr/local/bin/prometheus-nginxlog-exporter"
+  register: nginxlog_exporter_binary
+
+- when: not nginxlog_exporter_binary.stat.exists or nginxlog_exporter_upgrade
+  block:
+    - name: "Download nginxlog-exporter..."
+      get_url:
+        url: '{{ nginxlog_exporter_url }}'
+        dest: /tmp/
+        timeout: 60
+
+    - name: "Extract archive"
+      unarchive:
+        src: "/tmp/{{ nginxlog_exporter_tgz }}"
+        dest: "/usr/local/bin/"
+        mode: 0755
+        remote_src: true
+
+    - name: "Create config directory"
+      file:
+        path: "/etc/nginxlog_exporter"
+        state: directory
+        mode: 0755
+
+- name: "Create config file"
+  template:
+    src: config.yaml.j2
+    dest: "/etc/nginxlog_exporter/config.yaml"
+    mode: 0600
+  notify: restart nginxlog_exporter
+
+- name: "Create systemd for nginxlog_exporter"
+  template:
+    src: nginxlog_exporter.service.j2
+    dest: /etc/systemd/system/nginxlog_exporter.service
+    mode: 0644
+  notify: "restart nginxlog_exporter"
+
+- name: Start nginxlog_exporter.service
+  systemd:
+    name: nginxlog_exporter
+    state: started
+    enabled: true
+    daemon_reload: true

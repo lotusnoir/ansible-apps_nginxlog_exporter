@@ -8,10 +8,10 @@ StartLimitInterval=0
 [Service]
 Type=simple
 Restart=always
-ExecStart=/usr/local/bin/prometheus-nginxlog-exporter \
-        -config-file /etc/nginxlog_exporter/config.yaml
+ExecStart={{ nginxlog_exporter_install_dir }}/prometheus-nginxlog-exporter \
+        -config-file {{ nginxlog_exporter_config_dir }}/config.yaml
 ExecReload=/bin/kill -HUP $MAINPID
-SyslogIdentifier=nginxlog-exporter
+SyslogIdentifier=nginxlog_exporter
 RestartSec=1
 PrivateTmp=yes
 

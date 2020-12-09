@@ -1,12 +1,18 @@
 ---
-nginxlog_exporter_version:   "1.7.1"
-nginxlog_exporter_tgz:       "prometheus-nginxlog-exporter_{{ nginxlog_exporter_version }}_linux_amd64.tar.gz"
-nginxlog_exporter_url:       "https://github.com/martin-helmich/prometheus-nginxlog-exporter/releases/download/v{{ nginxlog_exporter_version }}/{{ nginxlog_exporter_tgz }}"
+# Binary install
+nginxlog_exporter_version: "1.7.1"
+nginxlog_exporter_tgz: "prometheus-nginxlog-exporter_{{ nginxlog_exporter_version }}_linux_amd64.tar.gz"
+nginxlog_exporter_url: "https://github.com/martin-helmich/prometheus-nginxlog-exporter/releases/download/v{{ nginxlog_exporter_version }}/{{ nginxlog_exporter_tgz }}"
+nginxlog_exporter_temp_dir: "/tmp"
+nginxlog_exporter_config_dir: "/etc/nginxlog_exporter"
+nginxlog_exporter_install_dir: "/usr/local/bin"
+nginxlog_exporter_force_install: false
 
-nginxlog_exporter_upgrade: false
+# Systemd option
 nginxlog_exporter_listen_address: 127.0.0.1
 nginxlog_exporter_listen_port: 9109
 
+# Config file options
 nginxlog_exporter_config: |
   listen:
     port: {{ nginxlog_exporter_listen_port }}

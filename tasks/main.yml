@@ -1,42 +1,53 @@
 ---
+- name: "End play if distribution not suported"
+  meta: end_host
+  when:
+    - ansible_distribution != "Debian"
+    - ansible_distribution != "Ubuntu"
+    - ansible_distribution != "CentOS"
+
 - name: "Check if prometheus-nginxlog-exporter binary exist"
   stat:
-    path: "/usr/local/bin/prometheus-nginxlog-exporter"
+    path: '{{ nginxlog_exporter_install_dir }}/prometheus-nginxlog-exporter'
   register: nginxlog_exporter_binary
 
-- when: not nginxlog_exporter_binary.stat.exists or nginxlog_exporter_upgrade
+- when: not nginxlog_exporter_binary.stat.exists or nginxlog_exporter_force_install|bool
   block:
+    - name: "Ensure install dir exists"
+      file:
+        path: '{{ item }}'
+        state: directory
+        mode: '0755'
+      with_items:
+        - '{{ nginxlog_exporter_install_dir }}'
+        - '{{ nginxlog_exporter_config_dir }}'
+
     - name: "Download nginxlog-exporter..."
       get_url:
         url: '{{ nginxlog_exporter_url }}'
-        dest: /tmp/
-        timeout: 60
+        dest: '{{ nginxlog_exporter_temp_dir }}'
+        timeout: '60'
+        mode: '0644'
 
     - name: "Extract archive"
       unarchive:
-        src: "/tmp/{{ nginxlog_exporter_tgz }}"
-        dest: "/usr/local/bin/"
-        mode: 0755
+        src: '{{ nginxlog_exporter_temp_dir }}/{{ nginxlog_exporter_tgz }}'
+        dest: '{{ nginxlog_exporter_install_dir }}'
         remote_src: true
-
-    - name: "Create config directory"
-      file:
-        path: "/etc/nginxlog_exporter"
-        state: directory
-        mode: 0755
+        mode: '0755'
 
 - name: "Create config file"
   template:
-    src: config.yaml.j2
-    dest: "/etc/nginxlog_exporter/config.yaml"
-    mode: 0600
+    src: 'config.yaml.j2'
+    dest: '/etc/nginxlog_exporter/config.yaml'
+    mode: '0600'
   notify: restart nginxlog_exporter
 
 - name: "Create systemd for nginxlog_exporter"
   template:
-    src: nginxlog_exporter.service.j2
-    dest: /etc/systemd/system/nginxlog_exporter.service
-    mode: 0644
+    src: 'nginxlog_exporter.service.j2'
+    dest: '/etc/systemd/system/nginxlog_exporter.service'
+    mode: '0640'
   notify: "restart nginxlog_exporter"
 
 - name: Start nginxlog_exporter.service

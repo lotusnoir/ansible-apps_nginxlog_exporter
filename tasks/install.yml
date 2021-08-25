@@ -1,0 +1,56 @@
+---
+- name: "Check if prometheus-nginxlog-exporter binary exist"
+  stat:
+    path: '{{ nginxlog_exporter_install_dir }}/prometheus-nginxlog-exporter'
+  register: nginxlog_exporter_binary
+
+- when: not nginxlog_exporter_binary.stat.exists or nginxlog_exporter_force_install|bool
+  block:
+    - name: "Ensure install dir exists"
+      file:
+        path: '{{ item }}'
+        state: directory
+        mode: '0755'
+      with_items:
+        - '{{ nginxlog_exporter_install_dir }}'
+        - '{{ nginxlog_exporter_config_dir }}'
+
+    - name: "Install requierements"
+      package:
+        name: "ca-certificates"
+        state: present
+
+    - name: "Download nginxlog-exporter..."
+      get_url:
+        url: '{{ nginxlog_exporter_url }}'
+        dest: '{{ nginxlog_exporter_temp_dir }}'
+        timeout: '60'
+        mode: '0644'
+
+    - name: "Extract archive"
+      unarchive:
+        src: '{{ nginxlog_exporter_temp_dir }}/{{ nginxlog_exporter_tgz }}'
+        dest: '{{ nginxlog_exporter_install_dir }}'
+        remote_src: true
+        mode: '0755'
+
+- name: "Create config file"
+  template:
+    src: 'config.yaml.j2'
+    dest: '/etc/nginxlog_exporter/config.yaml'
+    mode: '0600'
+  notify: restart nginxlog_exporter
+
+- name: "Create systemd for nginxlog_exporter"
+  template:
+    src: 'nginxlog_exporter.service.j2'
+    dest: '/etc/systemd/system/nginxlog_exporter.service'
+    mode: '0644'
+  notify: "restart nginxlog_exporter"
+
+- name: Start nginxlog_exporter.service
+  service:
+    name: nginxlog_exporter
+    state: started
+    enabled: true
+    daemon_reload: true

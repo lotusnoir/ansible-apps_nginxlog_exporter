@@ -1,21 +1,29 @@
 ---
 galaxy_info:
-  author: "Philippe leal"
-  description: "Install and configure nginxlog exporter metrics for prometheus"
+  author: lotusnoir
   role_name: apps_nginxlog_exporter
-  license: "license: Apache License, Version 2.0"
+  description: "Deploy [nginxlog_exporter](https://github.com/martin-helmich/prometheus-nginxlog-exporter/) to expose nginxlog metrics to prometheus."
+  license: "Apache License, Version 2.0"
   min_ansible_version: 2.8
 
   platforms:
     - name: "Ubuntu"
       versions:
-        - "xenial"
+        - "focal"
         - "bionic"
     - name: "Debian"
       versions:
         - "bullseye"
         - "buster"
-        - "stretch"
+    - name: "RedHat"
+      versions:
+        - "Maipo"
+    - name: "CentOS"
+      versions:
+        - "8"
+    - name: "Rocky"
+      versions:
+        - "8"
 
   galaxy_tags:
     - nginxlog

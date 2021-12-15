@@ -1,34 +1,39 @@
-# Ansible Role: ansible-apps_nginxlog_exporter
+# ansible-apps_nginxlog_exporter
 
 ## Description
 
-[![Build Status](https://travis-ci.com/lotusnoir/ansible-apps_nginxlog_exporter.svg?branch=master)](https://travis-ci.com/lotusnoir/ansible-apps_nginxlog_exporter)[![License](https://img.shields.io/badge/license-Apache--2.0-brightgreen)](https://opensource.org/licenses/Apache-2.0)[![Ansible Role](https://img.shields.io/badge/ansible%20role-apps__nginxlog_exporter-blue)](https://galaxy.ansible.com/lotusnoir/ansible-apps_nginxlog_exporter/)[![GitHub tag](https://img.shields.io/badge/version-latest-blue)](https://github.com/lotusnoir/ansible-apps_nginxlog_exporter/tags)
+[![Galaxy Role](https://img.shields.io/badge/galaxy-apps_nginxlog_exporter-purple?style=flat)](https://galaxy.ansible.com/lotusnoir/apps_nginxlog_exporter)
+[![Version](https://img.shields.io/github/release/lotusnoir/ansible-apps_nginxlog_exporter.svg)](https://github.com/lotusnoir/ansible-apps_nginxlog_exporter/releases/latest)
+![GitHub repo size](https://img.shields.io/github/repo-size/lotusnoir/ansible-apps_nginxlog_exporter?color=orange&style=flat)
+[![downloads](https://img.shields.io/ansible/role/d/52272)](https://galaxy.ansible.com/lotusnoir/apps_nginxlog_exporter)
+![Ansible Quality Score](https://img.shields.io/ansible/quality/52272)
+[![License](https://img.shields.io/badge/license-Apache--2.0-brightgreen?style=flat)](https://opensource.org/licenses/Apache-2.0)
 
 Deploy [nginxlog_exporter](https://github.com/martin-helmich/prometheus-nginxlog-exporter/) to expose nginxlog metrics to prometheus.
 
+## Requirements
+
+none
+
 ## Role variables
 
-| Name           | Default Value | Description                        |
-| -------------- | ------------- | -----------------------------------|
-| `nginxlog_exporter_version` | 1.7.1 | nginxlog_exporter version |
-| `nginxlog_exporter_upgrade` | false | force upgrade |
-| `nginxlog_exporter_listen_address` | 127.0.0.1 | address to listen |
-| `nginxlog_exporter_listen_port` | 9109 | port to expose prometheus metrics |
+See [variables](/defaults/main.yml) for more details.
 
 ## Examples
 
-	---
-	- hosts: apps_nginxlog_exporter
-	  become: yes
-	  become_method: sudo
-	  gather_facts: yes
-	  roles:
-	    - role: ansible-apps_nginxlog_exporter
-	  environment: 
-	    http_proxy: "{{ http_proxy }}"
-	    https_proxy: "{{ https_proxy }}"
-	    no_proxy: "{{ no_proxy }}
+        ---
+        - hosts: apps_nginxlog_exporter
+          become: true
+          become_method: sudo
+          gather_facts: true
+          roles:
+            - role: ansible-apps_nginxlog_exporter
+
+## Grafana Dashboard
+
+You can find a grafana dashboard [here](https://grafana.com/grafana/dashboards/13572)
 
 ## License
 
 This project is licensed under Apache License. See [LICENSE](/LICENSE) for more details.
+

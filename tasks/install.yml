@@ -20,6 +20,10 @@
       ansible.builtin.package:
         name: "ca-certificates"
         state: present
+      register: pkg_result
+      retries: 12
+      delay: 10
+      until: pkg_result is success
 
     - name: "Download nginxlog-exporter..."
       ansible.builtin.get_url:
@@ -49,7 +53,7 @@
     mode: '0644'
   notify: "Restart nginxlog_exporter"
 
-- name: Start nginxlog_exporter.service
+- name: "Start nginxlog_exporter.service"
   ansible.builtin.service:
     name: nginxlog_exporter
     state: started

@@ -22,6 +22,7 @@
 ## Description
 
 Deploy [nginxlog_exporter](https://github.com/martin-helmich/prometheus-nginxlog-exporter/) to expose nginxlog metrics to prometheus.
+
 ## Requirements
 
 none
